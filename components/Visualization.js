@@ -33,10 +33,36 @@ controller.update = function(data, progress) {
     // Stop update if Google chart package hasn't finished loading yet.
     if (!googleLoaded) return;
 
+    // Google Charts wants two columns:
+    // One each for the pie slice name and the slice size
+    var dataForPieChart = [];
+    dataForPieChart.push(["wedge","quantity"]);
+
+    // Go through each data point and reshape to fit Google Charts format.
+    data.forEach( function(datum) {
+        var row = [datum.group[0],datum.current.count];
+        dataForPieChart.push(row);
+    });
+
+    // Feed our data to Google's transform to get Google's internal format.
+    var googleDT = google.visualization.arrayToDataTable(dataForPieChart);
+    
+    // Set our Google Chart formatting options
+    var options = {
+        colors: ['red','green','blue'],
+        pieSliceTextStyle: {
+            color: 'black',
+        }
+    };    
+
+    // Create and render the chart    
+    var pieChart = new google.visualization.PieChart(controller.element);
+    pieChart.draw(googleDT, options);
+
     // Print out data object when the chart receives it.
-    console.log("UPDATE!");
-    console.log("data:", data);
-    console.log("progress:", progress);
+    // console.log("UPDATE!");
+    // console.log("data:", data);
+    // console.log("progress:", progress);
 };
 
 controller.resize = function(width, height, size) {
