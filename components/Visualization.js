@@ -15,9 +15,23 @@ controller.createAxisLabel({
 // render the chart. controller.element should be treated as read-only.
 console.log("Element:", controller.element);
 
+// Set a flag to only do chart updates when Google Charts has loaded
+var googleLoaded = false;
+
+// Set flag to true once the charting library is loaded
+google.charts.setOnLoadCallback( function() {
+    googleLoaded = true;
+});
+
+// Load Google Charts
+google.charts.load('current', {'packages':['corechart']});
+
 
 controller.update = function(data, progress) {
     // Called when new data arrives
+
+    // Stop update if Google chart package hasn't finished loading yet.
+    if (!googleLoaded) return;
 
     // Print out data object when the chart receives it.
     console.log("UPDATE!");
