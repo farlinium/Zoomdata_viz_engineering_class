@@ -11,10 +11,24 @@ controller.createAxisLabel({
     popoverTitle: 'Group'
 });
 
+// controller.element stores the element where Zoomdata will
+// render the chart. controller.element should be treated as read-only.
+console.log("Element:", controller.element);
+
+
 controller.update = function(data, progress) {
     // Called when new data arrives
+
+    // Print out data object when the chart receives it.
+    console.log("UPDATE!");
+    console.log("data:", data);
+    console.log("progress:", progress);
 };
 
 controller.resize = function(width, height, size) {
     // Called when the widget is resized
+
+    // Print out resize info when resize is called.
+    console.log("RESIZE!");
+    console.log("width:", width, " - height:", height, " - size:", size);
 };
