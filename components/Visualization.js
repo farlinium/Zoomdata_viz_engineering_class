@@ -39,6 +39,16 @@ google.charts.load('current', {'packages':['corechart']});
 // we can access them in the event of a controller.resize() call.
 var resizeData, resizeProgress;
 
+// Add a mouse move event handler to keep track of mouse position for 
+// drawing tooltips and the radial menu.
+var latestEvent;
+
+document.onmousemove = handleMouseMove;
+
+function handleMouseMove(e) {
+    latestEvent = e;
+}
+
 
 controller.update = function(data, progress) {
     // Called when new data arrives
@@ -93,12 +103,28 @@ controller.update = function(data, progress) {
         colors: theColorAccessor.getColorRange(),
         pieSliceTextStyle: {
             color: 'black',
-        }
+        },
+        tooltip: {trigger:'none'}
     };    
 
     // Create and render the chart    
     var pieChart = new google.visualization.PieChart(controller.element);
     pieChart.draw(googleDT, options);
+
+    // Add a listener to display the ZD tooltip when a chart element gets moused over.
+    google.visualization.events.addListener(pieChart, 'onmouseover', function(e) {
+        controller.tooltip.show({
+            event:latestEvent,
+            data: function() { // Needs to be a function that returns a ZD datum
+                return resizeData[e.row];
+            }
+        })
+    });
+
+    // ...and another listener to hide the tooltip when no longer needed
+    google.visualization.events.addListener(pieChart, 'onmouseout', function(e) {
+        controller.tooltip.hide()
+    });
 
     // Print out data object when the chart receives it.
     // console.log("UPDATE!");
