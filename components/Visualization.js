@@ -126,6 +126,17 @@ controller.update = function(data, progress) {
         controller.tooltip.hide()
     });
 
+    // Listener for displaying the radial menu on click.
+    google.visualization.events.addListener(pieChart, 'select', function(e) {
+        var sel = pieChart.getSelection();
+        controller.menu.show({
+            event:latestEvent,
+            data: function() { // Needs to be a function that returns a ZD datum
+                return resizeData[sel[0].row];
+            }
+        })
+    })
+
     // Print out data object when the chart receives it.
     // console.log("UPDATE!");
     // console.log("data:", data);
